@@ -1,0 +1,39 @@
+////
+  //    Copyright 2009-2023 the original author or authors.
+  //
+  //    Licensed under the Apache License, Version 2.0 (the "License");
+  //    you may not use this file except in compliance with the License.
+  //    You may obtain a copy of the License at
+  //
+  //       https://www.apache.org/licenses/LICENSE-2.0
+  //
+  //    Unless required by applicable law or agreed to in writing, software
+  //    distributed under the License is distributed on an "AS IS" BASIS,
+  //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  //    See the License for the specific language governing permissions and
+  //    limitations under the License.
+////
+
+[#preface]
+[preface]
+= 前言
+
+https://mybatis.org/mybatis-3/[MyBatis^] 是一款优秀的持久层框架，它支持自定义 SQL、存储过程以及高级映射。MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。
+
+学习和理解优秀开源框架的设计思想，是提升自我设计能力的捷径。源码分析是学习开源框架设计设想的不二法门。本文档着重学习和记录对 MyBatis 源码分析的点滴知识。希望点滴知识，汇聚成汪洋大海。
+
+== 友情支持
+
+如果觉得对您有所帮助，看在D瓜哥码这么多字的辛苦上，请友情支持一下，D瓜哥感激不尽，😜
+
+[cols="2*^",frame=none]
+|===
+| image:assets/images/alipay.png[title="支付宝", alt="支付宝", width="90%"]
+| image:assets/images/wxpay.jpg[title="微信", alt="微信", width="90%"]
+|===
+
+有些打赏的朋友希望可以加个好友，欢迎关注D瓜哥的微信公众号，这样就可以通过公众号的回复直接给我发信息。
+
+image::assets/images/wx-jikerizhi.png[align="center",width=98%]
+
+TIP: **公众号的微信号是: `jikerizhi`**。__因为众所周知的原因，有时图片加载不出来。如果图片加载不出来可以直接通过搜索微信号来查找我的公众号。__

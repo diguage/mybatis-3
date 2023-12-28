@@ -74,6 +74,7 @@ public class ClassLoaderWrapper {
     return getResourceAsStream(resource, getClassLoaders(null));
   }
 
+  // tag::getResourceAsStream-String-ClassLoader[]
   /**
    * Get a resource from the classpath, starting with a specific class loader
    *
@@ -87,6 +88,7 @@ public class ClassLoaderWrapper {
   public InputStream getResourceAsStream(String resource, ClassLoader classLoader) {
     return getResourceAsStream(resource, getClassLoaders(classLoader));
   }
+  // end::getResourceAsStream-String-ClassLoader[]
 
   /**
    * Find a class on the classpath (or die trying)
@@ -120,6 +122,7 @@ public class ClassLoaderWrapper {
     return classForName(name, getClassLoaders(classLoader));
   }
 
+  // tag::getResourceAsStream-String-ClassLoaders[]
   /**
    * Try to get a resource from a group of classloaders
    *
@@ -137,7 +140,8 @@ public class ClassLoaderWrapper {
         // try to find the resource as passed
         InputStream returnValue = cl.getResourceAsStream(resource);
 
-        // now, some class loaders want this leading "/", so we'll add it and try again if we didn't find the resource
+        // now, some class loaders want this leading "/",
+        // so we'll add it and try again if we didn't find the resource
         if (null == returnValue) {
           returnValue = cl.getResourceAsStream("/" + resource);
         }
@@ -149,6 +153,7 @@ public class ClassLoaderWrapper {
     }
     return null;
   }
+  // end::getResourceAsStream-String-ClassLoaders[]
 
   /**
    * Get a resource as a URL using the current class path
@@ -227,9 +232,11 @@ public class ClassLoaderWrapper {
 
   }
 
+  // tag::getClassLoaders[]
   ClassLoader[] getClassLoaders(ClassLoader classLoader) {
     return new ClassLoader[] { classLoader, defaultClassLoader, Thread.currentThread().getContextClassLoader(),
         getClass().getClassLoader(), systemClassLoader };
   }
+  // end::getClassLoaders[]
 
 }

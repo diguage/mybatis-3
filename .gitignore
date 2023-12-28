@@ -19,3 +19,29 @@ derby.log
 .mvn/wrapper/maven-wrapper.jar
 .sts4-cache/
 *.releaseBackup
+
+
+# Editor-based Rest Client
+.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
+.idea/compiler.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/qaplug_profiles.xml
+.idea/vcs.xml
+.idea
+*.iml
+
+/docs/*.html
+/docs/.asciidoctor
+/docs/*.svg
+/docs/*.png
+
+cfg/gems
+
+*.ttf
+*.otf

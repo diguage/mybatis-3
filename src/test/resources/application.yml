@@ -1,0 +1,23 @@
+mybatis:
+  type-aliases-package: com.diguage.truman.model
+#  type-handlers-package: com.example.typehandler
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+  mapper-locations: classpath:truman/mapper/employees.xml
+
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    hikari:
+      jdbc-url: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false;MODE=MYSQL;TRACE_LEVEL_SYSTEM_OUT=2"
+      username: sa
+      password:
+  sql:
+    init:
+      schema-locations: truman/database/employees/schema.sql
+      data-locations: truman/database/employees/data.sql
+  application:
+    name: "ThisIsDemo"

@@ -44,9 +44,14 @@ public class SqlSessionFactoryBuilder {
     return build(reader, null, properties);
   }
 
+  /**
+   * 其他重载方法都会调用到这个方法
+   */
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
+      // 通过 XMLConfigBuilder 解析 MyBATIS 的配置文件，然后生成 Configuration 对象
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
+      // 创建 DefaultSqlSessionFactory 对象
       return build(parser.parse());
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error building SqlSession.", e);

@@ -33,12 +33,15 @@
   <logger name="org.apache.ibatis.logging">
     <level value="debug"/>
   </logger>
+    <logger name="org.h2">
+        <level value="DEBUG"/>
+    </logger>
   <logger name="org.apache.ibatis.session.AutoMappingUnknownColumnBehavior">
     <level value="warn"/>
     <appender-ref ref="lastEventSavedAppender"/>
   </logger>
 
-  <root level="error">
+  <root level="INFO">
     <appender-ref ref="stdout"/>
   </root>
 

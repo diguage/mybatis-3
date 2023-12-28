@@ -54,6 +54,11 @@ public class MapperMethod {
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+  /**
+   * 根据 CURD 的类型，选择 SqlSession 的对应方法进行执行
+   *
+   * @commenter D瓜哥 · https://www.diguage.com
+   */
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
     switch (command.getType()) {
