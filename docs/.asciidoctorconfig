@@ -1,0 +1,26 @@
+// this adds attributes to every preview being rendered in IntelliJ
+// for more information see:
+// https://intellij-asciidoc-plugin.ahus1.de/docs/users-guide/features/advanced/asciidoctorconfig-file.html
+
+:project_basedir: {asciidoctorconfigdir}/..
+
+:pdf-fontsdir: {project_basedir}/cfg/fonts
+:pdf-stylesdir: {project_basedir}/cfg/theme
+:pdf-theme: Source
+
+:icons: font
+
+:diagram_attr: format=svg,align="center",width=100%
+:image_attr: align="center",width=100%
+
+:source_attr: linenums,indent=0,subs="attributes,verbatim"
+:java_src_attr: source%nowrap,java,{source_attr}
+:sql_src_attr: source%nowrap,sql,{source_attr}
+:xml_src_attr: source%nowrap,xml,{source_attr}
+
+:sourcedir: {project_basedir}/src/main/java/org/apache/ibatis
+:source_basedir: {project_basedir}/src/main/java/org/apache/ibatis
+:mybatis_src_basedir: {project_basedir}/src/main/java/org/apache/ibatis
+:turman_src_basedir: {project_basedir}/src/test/java/com/diguage/truman
+:turman_resource_basedir: {project_basedir}/src/test/resources/truman
+

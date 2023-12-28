@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Properties;
 
+// tag::Resources[]
 /**
  * A class to simplify access to resources through the classloader.
  *
@@ -35,6 +36,7 @@ import java.util.Properties;
 public class Resources {
 
   private static final ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
+  // end::Resources[]
 
   /**
    * Charset to use when calling getResourceAsReader. null means use the system default.
@@ -100,6 +102,7 @@ public class Resources {
     return url;
   }
 
+  // tag::getResourceAsStream-String[]
   /**
    * Returns a resource on the classpath as a Stream object
    *
@@ -114,7 +117,9 @@ public class Resources {
   public static InputStream getResourceAsStream(String resource) throws IOException {
     return getResourceAsStream(null, resource);
   }
+  // end::getResourceAsStream-String[]
 
+  // tag::getResourceAsStream-ClassLoader-String[]
   /**
    * Returns a resource on the classpath as a Stream object
    *
@@ -135,6 +140,7 @@ public class Resources {
     }
     return in;
   }
+  // end::getResourceAsStream-ClassLoader-String[]
 
   /**
    * Returns a resource on the classpath as a Properties object

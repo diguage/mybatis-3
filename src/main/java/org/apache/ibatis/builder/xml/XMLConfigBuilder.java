@@ -111,6 +111,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     return configuration;
   }
 
+  // tag::parseConfiguration[]
   private void parseConfiguration(XNode root) {
     try {
       // issue #117 read properties first
@@ -133,13 +134,16 @@ public class XMLConfigBuilder extends BaseBuilder {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
     }
   }
+  // end::parseConfiguration[]
 
+  // tag::settingsAsProperties[]
   private Properties settingsAsProperties(XNode context) {
     if (context == null) {
       return new Properties();
     }
     Properties props = context.getChildrenAsProperties();
     // Check that all settings are known to the configuration class
+    // 获取 Configuration 类的元信息，主要是反射相关信息
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
     for (Object key : props.keySet()) {
       if (!metaConfig.hasSetter(String.valueOf(key))) {
@@ -149,6 +153,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
     return props;
   }
+  // end::settingsAsProperties[]
 
   private void loadCustomVfsImpl(Properties props) throws ClassNotFoundException {
     String value = props.getProperty("vfsImpl");
@@ -234,17 +239,21 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  // tag::propertiesElement[]
   private void propertiesElement(XNode context) throws Exception {
     if (context == null) {
       return;
     }
+    // 读取子标签的配置信息
     Properties defaults = context.getChildrenAsProperties();
     String resource = context.getStringAttribute("resource");
     String url = context.getStringAttribute("url");
+    // resource 和 url 属性不能同时存在
     if (resource != null && url != null) {
       throw new BuilderException(
           "The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
     }
+    // 从这里可以看出：Properties 配置文件的优先级更高
     if (resource != null) {
       defaults.putAll(Resources.getResourceAsProperties(resource));
     } else if (url != null) {
@@ -257,6 +266,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     parser.setVariables(defaults);
     configuration.setVariables(defaults);
   }
+  // end::propertiesElement[]
 
   private void settingsElement(Properties props) {
     configuration

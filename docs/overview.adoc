@@ -1,0 +1,64 @@
+[#overview]
+= 概述
+
+这是正文部分！
+
+行内高亮： `java`。
+
+== 环境准备
+
+MyBatis 是一个 O/R Mapping 框架，要做源码分析，数据库是必要的准备条件。数据库，我们采用现在全球应用最广泛的 MySQL 数据库。对于数据库 Schema 来说，采用 MySQL 提供的 https://dev.mysql.com/doc/employee/en/[MySQL : Employees Sample Database^] 数据库。该数据库是广泛接受的示例数据集，而且是一个非常大的数据集，包含了数百万条记录，可以用于测试和验证 MySQL 的性能和处理大数据量的能力。数据集包含了员工（`employees`）、部门（`departments`）等信息，以及一套测试和验证用的脚本和SQL语句。该数据库结构如下：
+
+image::assets/images/employees-schema.png[{image_attr}]
+
+建表语句如下：
+
+[{sql_src_attr}]
+----
+include::{turman_resource_basedir}/database/employees/schema.sql[]
+----
+<1> 与时俱进，请选择 MySQL 8.0+；
+<2> https://www.monolune.com/articles/what-is-the-utf8mb4_0900_ai_ci-collation/[What is the utf8mb4_0900_ai_ci collation?^]
+
+可以从 https://github.com/datacharmer/test_db[A sample MySQL database^] 下载获取该数据库完整数据。
+
+== 示例程序
+
+为了方便后面叙述，这里给出一个最简单的示例程序：只有一个查询：
+
+.`Employee`
+[{java_src_attr}]
+----
+include::{turman_src_basedir}/model/Employee.java[]
+----
+
+.`EmployeeMapper`
+[{java_src_attr}]
+----
+include::{turman_src_basedir}/mapper/EmployeeMapper.java[]
+----
+
+.XML Mapper 配置
+[{xml_src_attr}]
+----
+include::{turman_resource_basedir}/mapper/employees.xml[]
+----
+
+.MyBatis 配置文件
+[{xml_src_attr}]
+----
+include::{turman_resource_basedir}/mybatis-config.xml[]
+----
+
+.执行
+[{java_src_attr}]
+----
+include::{turman_src_basedir}/runner/TestMain.java[tag=test0101]
+----
+
+从示例程序来看， MyBatis 完整的处理流程大概分为如下几步：
+
+. 配置解析，将 XML 和 程序中的一些配置信息解析出来；
+. 构建 `SqlSessionFactory`
+. 获取 `Mapper` 并执行；
+. 结果集转换；

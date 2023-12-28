@@ -943,6 +943,9 @@ public class Configuration {
     mapperRegistry.addMapper(type);
   }
 
+  /**
+   * 这里也什么都没做，直接交给 MapperRegistry 处理
+   */
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     return mapperRegistry.getMapper(type, sqlSession);
   }

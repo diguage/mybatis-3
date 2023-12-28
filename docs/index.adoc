@@ -1,0 +1,22 @@
+= MyBatis 源码分析^Alpha^
+D瓜哥 <https://www.diguage.com/>
+{docdate}
+include::_attributes.adoc[]
+
+:sectnums!:
+
+// // 感谢
+// include::dedication.adoc[]
+
+// 前言
+include::preface.adoc[leveloffset=+1]
+
+:sectnums:
+
+include::overview.adoc[leveloffset=+1]
+
+include::parse-config.adoc[leveloffset=+1]
+
+include::license.adoc[leveloffset=+1]
+
+

@@ -266,8 +266,10 @@ public class XNode {
     return children;
   }
 
+  // tag::getChildrenAsProperties[]
   public Properties getChildrenAsProperties() {
     Properties properties = new Properties();
+    // 遍历子标签，获取 name 和 value 属性
     for (XNode child : getChildren()) {
       String name = child.getStringAttribute("name");
       String value = child.getStringAttribute("value");
@@ -277,6 +279,7 @@ public class XNode {
     }
     return properties;
   }
+  // end::getChildrenAsProperties[]
 
   @Override
   public String toString() {

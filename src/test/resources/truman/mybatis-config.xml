@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- @author D瓜哥 · https://www.diguage.com -->
+    <!--
+        properties?,
+        settings?,
+        typeAliases?,
+        typeHandlers?,
+        objectFactory?,
+        objectWrapperFactory?,
+        reflectorFactory?,
+        plugins?,
+        environments?,
+        databaseIdProvider?,
+        mappers?
+    -->
+    <!-- tag::properties[] -->
+    <!-- https://mybatis.org/mybatis-3/configuration.html#properties -->
+    <properties resource="truman/db-cfg.properties">
+        <property name="driver" value="${driver}"/>
+        <!-- https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-networking.html -->
+        <!-- connectTimeout: Default 0 being no timeout -->
+        <!-- socketTimeout:  Default 0 means no timeout -->
+        <!-- https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-session.html -->
+        <!-- characterEncoding: 8.0.26+ will use "utf8mb4". -->
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+    </properties>
+    <!-- end::properties[] -->
+
+    <!-- https://mybatis.org/mybatis-3/configuration.html#settings -->
+    <settings>
+        <setting name="logImpl" value="SLF4j"/>
+        <setting name="defaultStatementTimeout" value="3600"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+    </settings>
+
+    <plugins>
+        <plugin interceptor="com.diguage.truman.plugin.SqlPlugin">
+            <property name="name" value="D瓜哥"/>
+            <property name="site" value="https://www.diguage.com"/>
+        </plugin>
+    </plugins>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="UNPOOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="truman/mapper/employees.xml"/>
+    </mappers>
+
+</configuration>
