@@ -158,6 +158,24 @@
 
     <!-- Reproducible Builds -->
     <project.build.outputTimestamp>1712079482</project.build.outputTimestamp>
+
+    <asciidoctorj.version>3.0.0-alpha.2</asciidoctorj.version>
+    <asciidoctorj-pdf.version>2.3.17</asciidoctorj-pdf.version>
+    <asciidoctorj-epub3.version>2.1.3</asciidoctorj-epub3.version>
+    <asciidoctorj-diagram.version>2.3.1</asciidoctorj-diagram.version>
+    <rouge.version>4.3.0</rouge.version>
+    <asciidoctor-multipage.version>0.0.19</asciidoctor-multipage.version>
+    <asciidoctor-comment-links.version>0.0.2</asciidoctor-comment-links.version>
+    <asciidoctor-tabs.version>1.0.0.beta.6</asciidoctor-tabs.version>
+    <asciidoctor-maven-plugin.version>3.0.0</asciidoctor-maven-plugin.version>
+    <mavengem-wagon.version>2.0.2</mavengem-wagon.version>
+    <gem-maven-plugin.version>3.0.3</gem-maven-plugin.version>
+    <download-maven-plugin.version>1.9.0</download-maven-plugin.version>
+    <exec-maven-plugin.version>3.3.0</exec-maven-plugin.version>
+    <jruby.version>9.4.7.0</jruby.version>
+    <gem.path>${project.basedir}/cfg/gems</gem.path>
+    <pdf-fonts.path>${project.basedir}/cfg/fonts</pdf-fonts.path>
+    <pdf-fonts.baseuri>https://github.com/diguage/open-fonts/releases/download/latest</pdf-fonts.baseuri>
   </properties>
 
   <dependencies>
@@ -351,9 +369,74 @@
       <version>${log4j.version}</version>
       <scope>test</scope>
     </dependency>
+
+
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>5.3.37</version>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>rouge</artifactId>
+      <version>${rouge.version}</version>
+      <type>gem</type>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <!-- https://github.com/asciidoctor/asciidoctor-tabs -->
+      <artifactId>asciidoctor-tabs</artifactId>
+      <version>${asciidoctor-tabs.version}</version>
+      <type>gem</type>
+      <exclusions>
+        <exclusion>
+          <groupId>rubygems</groupId>
+          <artifactId>asciidoctor</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>asciidoctor-multipage</artifactId>
+      <version>${asciidoctor-multipage.version}</version>
+      <type>gem</type>
+      <exclusions>
+        <exclusion>
+          <groupId>rubygems</groupId>
+          <artifactId>asciidoctor</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>asciidoctor-comment-links</artifactId>
+      <version>${asciidoctor-comment-links.version}</version>
+      <type>gem</type>
+      <exclusions>
+        <exclusion>
+          <groupId>rubygems</groupId>
+          <artifactId>asciidoctor</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <build>
+    <extensions>
+      <extension> <!-- this allows us to download gems -->
+        <groupId>org.jruby.maven</groupId>
+        <artifactId>mavengem-wagon</artifactId>
+        <version>${mavengem-wagon.version}</version>
+      </extension>
+    </extensions>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -455,6 +538,418 @@
           </excludes>
         </configuration>
       </plugin>
+
+
+
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>${license.plugin}</version>
+        <configuration>
+          <licenseSets>
+            <licenseSet>
+              <excludes>
+                <exclude>cfg/**</exclude>
+                <exclude>docs/**</exclude>
+                <exclude>**/*.adoc</exclude>
+                <exclude>**/*.puml</exclude>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*.svg</exclude>
+                <exclude>**/*.html</exclude>
+                <exclude>**/*.cfg</exclude>
+                <exclude>**/.asciidoctorconfig</exclude>
+                <exclude>**/.jrubydir</exclude>
+                <exclude>**/.gitkeep</exclude>
+                <exclude>**/*.gemspec</exclude>
+                <exclude>**/*.gem</exclude>
+                <exclude>**/*.otf</exclude>
+                <exclude>src/test/resources/truman/**</exclude>
+                <exclude>src/test/java/com/diguage/**</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jruby.maven</groupId>
+        <artifactId>gem-maven-plugin</artifactId>
+        <version>${gem-maven-plugin.version}</version>
+        <configuration>
+          <jrubyVersion>${jruby.version}</jrubyVersion>
+          <!-- https://stackoverflow.com/a/11277228/951836 -->
+          <!-- GEM_HOME is where gems will be installed (by default). -->
+          <gemHome>${gem.path}</gemHome>
+          <!-- GEM_PATH provides the locations where gems can be found. -->
+          <!-- Therefore GEM_PATH should include GEM_HOME -->
+          <gemPath>${gem.path}</gemPath>
+        </configuration>
+        <executions>
+          <!-- Install required gems in target directory -->
+          <execution>
+            <id>install-gems</id>
+            <goals>
+              <goal>initialize</goal>
+            </goals>
+            <phase>initialize</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>${download-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>install-font-NotoEmoji-Regular</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/NotoEmoji-Regular.ttf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>f224032937e77448b2586b171ed7d031</md5>
+            </configuration>
+          </execution>
+
+          <!-- 等宽字体 -->
+          <execution>
+            <id>install-font-SourceCodePro-Regular</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceCodePro-Regular.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>881bfa23a0fc625abe2a8c38b2a72180</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceCodePro-Semibold</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceCodePro-Semibold.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>e09d6d82c6e77726b03f3929dd2b6961</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceCodePro-It</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceCodePro-It.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>6fc0b73a8f4b42cc9ecb5154e3b45dcd</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceCodePro-BoldIt</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceCodePro-BoldIt.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>5b7d949c95111f4a7166553db479e5e1</md5>
+            </configuration>
+          </execution>
+
+          <!-- 中文字体 -->
+          <execution>
+            <id>install-font-SourceHanSerifSC-Regular</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSerifSC-Regular.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>3990fae1c68e4144013f92273fca41a9</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSerifSC-Bold</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSerifSC-Bold.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>9bb66a8d136498b323b3549f95a53935</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSerifSC-Medium</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSerifSC-Medium.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>46f15d8b48f93010232fbdb46c36006b</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSerifSC-SemiBold</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSerifSC-SemiBold.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>c27bc5f59edac6bd68d7a15d4f6a05f8</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSansSC-Regular</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSansSC-Regular.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>56195441817e7172c4cd914388710f20</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSansSC-Bold</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSansSC-Bold.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>c76f8a8f08293d0e1c5dc8302f7062aa</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSansSC-Medium</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSansSC-Medium.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>ebc3cd485fe89cc90b38be33464894ae</md5>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-font-SourceHanSansSC-Heavy</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>${pdf-fonts.baseuri}/SourceHanSansSC-Heavy.otf</url>
+              <outputDirectory>${pdf-fonts.path}</outputDirectory>
+              <md5>2dbb493c201153533bc0f92e93cee6af</md5>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>install-fonts-and-generate-config-file</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${project.basedir}/cfg/scripts/install-fonts.sh</executable>
+              <!-- <commandlineArgs>Args</commandlineArgs> -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <version>${asciidoctor-maven-plugin.version}</version>
+        <configuration>
+          <sourceDirectory>docs</sourceDirectory>
+          <sourceDocumentName>index.adoc</sourceDocumentName>
+          <attributes>
+            <sourcedir>${project.build.sourceDirectory}/org/apache/ibatis</sourcedir>
+            <basedir>${project.basedir}</basedir>
+            <source-highlighter>rouge</source-highlighter>
+            <!-- style: github \ monokai -->
+            <rouge-style>github</rouge-style>
+            <imagesdir>.</imagesdir>
+            <docinfo>true</docinfo>
+            <docinfodir>assets/tags</docinfodir>
+            <icons>font</icons>
+            <linkcss>true</linkcss>
+            <stylesdir>assets/styles</stylesdir>
+            <toclevels>3</toclevels>
+            <sectnums>true</sectnums>
+            <sectnumlevels>3</sectnumlevels>
+            <sectanchors>true</sectanchors>
+            <graphvizdot>/usr/local/bin/dot</graphvizdot>
+            <!-- File Path -->
+            <project_basedir>${project.basedir}</project_basedir>
+            <mybatis_src_basedir>${project.build.sourceDirectory}/org/apache/ibatis</mybatis_src_basedir>
+            <turman_src_basedir>${project.build.testSourceDirectory}/com/diguage/truman</turman_src_basedir>
+            <turman_resource_basedir>${project.basedir}/src/test/resources/truman</turman_resource_basedir>
+            <!-- Source Highlight Attributes -->
+            <source_attr>linenums,indent=0,subs="attributes,verbatim,quotes"</source_attr>
+            <java_src_attr>source%nowrap,java,{source_attr}</java_src_attr>
+            <sql_src_attr>source%nowrap,sql,{source_attr}</sql_src_attr>
+            <xml_src_attr>source%nowrap,xml,{source_attr}</xml_src_attr>
+            <html_src_attr>source%nowrap,html,{source_attr}</html_src_attr>
+            <!-- Image Attributes -->
+            <image_attr>align="center",width=100%</image_attr>
+            <diagram_attr>format=svg,align="center",width=90%</diagram_attr>
+            <plantumlconfig>${project.basedir}/cfg/plantuml.cfg</plantumlconfig>
+          </attributes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-multipage</id>
+            <phase>package</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>multipage_html5</backend>
+              <doctype>book</doctype>
+
+              <gemPath>${gem.path}</gemPath>
+              <requires>
+                <require>asciidoctor-diagram</require>
+                <require>asciidoctor-multipage</require>
+                <require>asciidoctor-comment-links</require>
+              </requires>
+
+              <outputDirectory>${project.build.directory}/docs/multipage</outputDirectory>
+
+              <attributes>
+                <toc>left</toc>
+              </attributes>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>generate-html</id>
+            <phase>package</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>html5</backend>
+              <doctype>book</doctype>
+              <outputDirectory>${project.build.directory}/docs/html</outputDirectory>
+              <attributes>
+                <toc>left</toc>
+              </attributes>
+
+              <gemPath>${gem.path}</gemPath>
+              <requires>
+                <require>asciidoctor-diagram</require>
+                <require>asciidoctor-comment-links</require>
+              </requires>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>generate-epub</id>
+            <phase>package</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>epub3</backend>
+              <sourceDocumentName>index.adoc</sourceDocumentName>
+              <outputDirectory>${project.build.directory}/docs/epub</outputDirectory>
+              <attributes>
+                <source-highlighter>coderay</source-highlighter>
+              </attributes>
+              <requires>
+                <require>asciidoctor-diagram</require>
+              </requires>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>generate-pdf</id>
+            <phase>package</phase>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <backend>pdf</backend>
+              <outputDirectory>${project.build.directory}/docs/pdf</outputDirectory>
+              <attributes>
+                <allow-uri-read/>
+                <diagram_attr>format=png,align="center",width=90%</diagram_attr>
+                <pdf-fontsdir>${project.basedir}/cfg/fonts</pdf-fontsdir>
+                <pdf-themesdir>${project.basedir}/cfg/theme</pdf-themesdir>
+                <!-- Set Source theme -->
+                <pdf-theme>Source</pdf-theme>
+                <pagenums/>
+                <toc/>
+                <idprefix/>
+                <idseparator>-</idseparator>
+                <!-- Fixes line wraps formatting inserting zero-width spaces (ZWSP) before CJ characters -->
+                <scripts>cjk</scripts>
+                <pdf-version>1.7</pdf-version>
+                <rouge-style>github</rouge-style>
+                <!--<media>screen</media>-->
+                <!--<optimize>screen</optimize>-->
+                <!--<media>prepress</media>-->
+                <!--<optimize>prepress</optimize>-->
+              </attributes>
+              <requires>
+                <require>asciidoctor-diagram</require>
+              </requires>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj</artifactId>
+            <version>${asciidoctorj.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-pdf</artifactId>
+            <version>${asciidoctorj-pdf.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-epub3</artifactId>
+            <version>${asciidoctorj-epub3.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-diagram</artifactId>
+            <version>${asciidoctorj-diagram.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby</artifactId>
+            <version>${jruby.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
 
@@ -553,4 +1048,12 @@
     </profile>
   </profiles>
 
+
+
+  <repositories>
+    <repository>
+      <id>mavengems</id>
+      <url>mavengem:https://rubygems.org</url>
+    </repository>
+  </repositories>
 </project>

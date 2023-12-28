@@ -53,6 +53,7 @@ import org.apache.ibatis.util.MapUtil;
  */
 public class Reflector {
 
+  // tag::fieldsAndConstructor[]
   private static final MethodHandle isRecordMethodHandle = getIsRecordMethodHandle();
   private final Class<?> type;
   private final String[] readablePropertyNames;
@@ -85,6 +86,7 @@ public class Reflector {
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
     }
   }
+  // end::fieldsAndConstructor[]
 
   private void addRecordGetMethods(Method[] methods) {
     Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0)

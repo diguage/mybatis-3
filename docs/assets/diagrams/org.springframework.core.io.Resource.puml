@@ -1,0 +1,29 @@
+@startuml
+header D瓜哥 · ""https://www.diguage.com""
+
+title **Resource 继承体系**
+
+interface InputStreamSource {
+  + InputStream getInputStream() 
+}
+
+interface Resource extends InputStreamSource {
+  + boolean exists()
+  + boolean isReadable()
+  + boolean isOpen()
+  + boolean isFile()
+  + URL getURL() 
+  + URI getURI() 
+  + File getFile() 
+  + ReadableByteChannel readableChannel() 
+  + byte[] getContentAsByteArray() 
+  + String getContentAsString(Charset charset) 
+  + long contentLength()
+  + long lastModified()
+  + Resource createRelative(String relativePath)
+  + String getFilename()
+  + String getDescription()
+}
+
+footer D瓜哥 · ""https://www.diguage.com"" · 出品
+@enduml
